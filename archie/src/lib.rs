@@ -22,7 +22,7 @@ pub mod log {
                 let level = super::platform::parse_url_query_string(&query_string, "RUST_LOG")
                     .and_then(|x| x.parse().ok())
                     .unwrap_or(_log::Level::Error);
-                let _ = wasm_logger::init(wasm_logger::Config::new(level));
+                let _ = console_log::init_with_level(level);
             } else {
                 let _ = env_logger::try_init();
             }
