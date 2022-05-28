@@ -1,3 +1,7 @@
+<div align="center">
+
 # Archie
 
-The _somewhat_ cross-platform renderer.
+Archie is a toy rendering abstraction for building 3D applications on native and web platforms.
+
+</div>
