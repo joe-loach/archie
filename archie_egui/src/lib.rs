@@ -1,13 +1,11 @@
-mod renderer;
-
 use archie::wgpu;
-use renderer::Renderer;
+use egui_wgpu::renderer::RenderPass;
 
 pub use egui;
 
 pub struct Egui {
     context: egui::Context,
-    renderer: Renderer,
+    renderer: RenderPass,
     winit_state: egui_winit::State,
     output: Option<egui::FullOutput>,
 }
@@ -16,7 +14,7 @@ impl Egui {
     pub fn new(ctx: &archie::Context) -> Self {
         let device = ctx.device();
 
-        let egui_renderer = Renderer::new(device, ctx.surface_format());
+        let egui_renderer = RenderPass::new(device, ctx.surface_format(), 1);
         let egui_winit_state = egui_winit::State::new(
             device.limits().max_texture_dimension_2d as usize,
             ctx.window(),
@@ -60,8 +58,11 @@ impl Egui {
     ) {
         if let Some(output) = self.output.take() {
             let meshes = self.context.tessellate(output.shapes);
-            self.renderer
-                .draw(ctx, encoder, view, meshes, output.textures_delta);
+            let screen = egui_wgpu::renderer::ScreenDescriptor {
+                size_in_pixels: [ctx.width(), ctx.height()],
+                pixels_per_point: ctx.window().scale_factor() as f32,
+            };
+            self.renderer.execute(encoder, view, &meshes, &screen, None);
         }
     }
 
