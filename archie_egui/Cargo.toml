@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-archie = { path = "../archie" }
+archie = { version = "0.0.1", git = "https://github.com/joe-loach/archie" }
 egui = { version = "0.18.1" }
 egui-winit = { version = "0.18.0", features = ["bytemuck"] }
 egui-wgpu = { version = "0.18.0" }
