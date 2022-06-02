@@ -46,10 +46,10 @@ impl Egui {
             &self.context,
             output.platform_output.take(),
         );
-
+        
         self.output = Some(output);
     }
-
+    
     pub fn draw(
         &mut self,
         ctx: &mut archie::Context,
@@ -62,6 +62,15 @@ impl Egui {
                 size_in_pixels: [ctx.width(), ctx.height()],
                 pixels_per_point: ctx.window().scale_factor() as f32,
             };
+            let device = ctx.device();
+            let queue = ctx.queue();
+            self.renderer.update_buffers(device, queue, &meshes, &screen);
+            for (id, delta) in output.textures_delta.set {
+                self.renderer.update_texture(device, queue, id, &delta);
+            }
+            for id in output.textures_delta.free {
+                self.renderer.free_texture(&id);
+            }
             self.renderer.execute(encoder, view, &meshes, &screen, None);
         }
     }
